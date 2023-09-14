@@ -1,38 +1,38 @@
 import axios, { AxiosResponse } from "axios";
+import { type } from "os";
 import React, { ReactNode, createContext, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-interface IUser {
+type User = {
   email: string;
   password: string;
-  name: string;
 }
 
 interface AuthContextUserProviderProps {
   children: ReactNode;
 }
 
-interface AuthContextType {
-  user: IUser | null;
-  userLogin: {
-    email: string;
-    password: string;
-  };
-  setUserLogin: React.Dispatch<
-    React.SetStateAction<{
-      email: string;
-      password: string;
-    }>
-  >;
+interface IAuthContextType {
+  user: any;
+  userLogin: User;
+  setUserLogin: React.Dispatch<React.SetStateAction<User>>;
   HandleLoginUser: (e: React.FormEvent) => Promise<void>;
 }
 
-export const AuthContextUser = createContext<AuthContextType | undefined>(undefined);
+export const AuthContextUser = createContext<IAuthContextType>({
+    user: null,
+    userLogin: {
+      email: "",
+      password: "",
+    },
+    setUserLogin: () => {},
+    HandleLoginUser: async () => {},
+});
 
-export const AuthContextUserProvider: React.FC<AuthContextUserProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<IUser | null>(null);
+export const AuthContextUserProvider: React.FC<AuthContextUserProviderProps> = ({ children } : AuthContextUserProviderProps) => {
+  const [user, setUser] = useState<any>(null);
   // login state
-  const [userLogin, setUserLogin] = useState({
+  const [userLogin, setUserLogin] = useState<User>({
     email: "",
     password: "",
   });
@@ -47,8 +47,10 @@ export const AuthContextUserProvider: React.FC<AuthContextUserProviderProps> = (
     async (e: React.FormEvent) => {
       e.preventDefault();
       // call api login
+      console.log(userLogin);
+      
       try {
-        const response: AxiosResponse<IUser> = await axios.post(
+        const response: AxiosResponse<User> = await axios.post(
           "http://localhost:5000/api/users/login",
           JSON.stringify(userLogin),
           {
@@ -60,8 +62,9 @@ export const AuthContextUserProvider: React.FC<AuthContextUserProviderProps> = (
 
         // Handle successful response then store user in localStorage, set state response user
         localStorage.setItem("userAuth", JSON.stringify(response.data));
-        setUser(response.data);
-      } catch (error) {
+        setUser(response?.data);
+
+      } catch (error: any) {
         // Handle error
         if (axios.isAxiosError(error)) {
           if (error.response) {
@@ -69,6 +72,8 @@ export const AuthContextUserProvider: React.FC<AuthContextUserProviderProps> = (
           } else if (error.request) {
             console.error("Request Error:", error.request);
           }
+        }else {
+            console.error("Error:", error.message);
         }
       }
     },
