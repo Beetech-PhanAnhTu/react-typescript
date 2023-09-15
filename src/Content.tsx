@@ -1,6 +1,9 @@
-import { memo, useContext, useEffect, useState } from "react";
+import {useContext} from "react";
 import styled from "styled-components";
 import { ChatPannel } from "./component/ChatPannel/ChatPannel";
+import { AuthContextUser } from "./context/AuthContext";
+import { ChatContext } from "./context/ChatContext";
+import UserChat from "./component/ChatPannel/UserChat";
 // import { ChatPannel } from "./page/ChatPannel/ChatPannel";
 // import { AuthContextUser } from "./context/AuthContext";
 // import { ChatContext } from "./context/ChatContext";
@@ -39,28 +42,30 @@ const StyleListUser = styled.ul`
   padding: 0;
 `;
 
-const StyledUserListCreateChat = styled.ul`
-    list-style: none;
-    padding: 0;
-`;
-const StyledUserItem = styled.a`
-  cursor: pointer;
-  padding: 10px 30px;
-  background-color: aqua;
-  margin-left: 15px;
-  border-radius: 10%;
-  box-shadow: 0px 3px #888888;
-  color: #888888;
-`;
+// const StyledUserListCreateChat = styled.ul`
+//     list-style: none;
+//     padding: 0;
+// `;
+// const StyledUserItem = styled.a`
+//   cursor: pointer;
+//   padding: 10px 30px;
+//   background-color: aqua;
+//   margin-left: 15px;
+//   border-radius: 10%;
+//   box-shadow: 0px 3px #888888;
+//   color: #888888;
+// `;
 
 function Content() {
-//   const {userChat, updateCurrentChat, scrollRef, listUserCreateChat} = useContext(ChatContext);
-//   const {user} = useContext(AuthContextUser);
+  const {userChat, updateCurrentChat} = useContext(ChatContext);
+  
+  const {user} = useContext(AuthContextUser);
+  const userChatLength = userChat?.length || 0;
     return (
         <StyledContainer>
           {/* sidebar */}
-          {/* <StyledSideBar>
-            {userChat?.length < 1 ? null : (
+          <StyledSideBar>
+            {userChatLength < 1 ? null : (
                 <StyleListUser>
                     {userChat?.map((chat, index) => (
                         <div key={index} onClick={() => updateCurrentChat(chat)}>
@@ -69,7 +74,7 @@ function Content() {
                     ))}
                 </StyleListUser>
           )}
-          </StyledSideBar> */}
+          </StyledSideBar>
           {/* sidebar */}
           {/* mainchat */}
           <StyledMainChat>
@@ -80,4 +85,4 @@ function Content() {
     )
 }
 
-export default memo(Content);
+export default Content;

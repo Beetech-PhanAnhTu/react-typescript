@@ -1,7 +1,8 @@
 import styled from "styled-components";
+// import { useFetchReceiverUser } from "../../hooks/useFetchReceiverUser";
+import React from "react";
 import { useFetchReceiverUser } from "../../hooks/useFetchReceiverUser";
-import React, { useContext, useEffect } from "react";
-import { ChatContext } from "../../context/ChatContext";
+import { IUserChat } from "../../context/ChatContextType";
 
 const StyledAvatarUser = styled.a`
     display: block;
@@ -19,7 +20,7 @@ const StyledAvatarUser = styled.a`
 
 const StyledUserChat = styled.div`
     flex: 1;
-    height: 60px;
+    height: 70px;
     overflow: hidden;
     position: relative;
     margin: 0 5px;
@@ -60,8 +61,8 @@ const StyledItemUser = styled.li`
 
 const StyledNotification = styled.span`
     position: absolute;
-    top: 33px;
-    left: 200px;
+    top: 43px;
+    left: 143px;
     width: 24px;
     height: 24px;
     background-color: aqua;
@@ -70,37 +71,34 @@ const StyledNotification = styled.span`
     color: #fff;
 `;
 
-const UserChat = (chat) => {
-    const {receiverUser} = useFetchReceiverUser(chat);
-    const {userOnline, notifications, marskUserChatSeenMessage, updateCurrentFirstChat} = useContext(ChatContext);
+interface UserChatProps {
+    chat: IUserChat;
+    user: any;
+}
+
+
+const UserChat:React.FC<UserChatProps> = (chat) => {
+    const {receiverUser} = useFetchReceiverUser(chat, null);
+    
+    // console.log(receiverUser);
+    
+    // const {userOnline, notifications, marskUserChatSeenMessage, updateCurrentFirstChat} = useContext(ChatContext);
 
     //unread message notification
-    const unreadMessageNotification = () => {
-        return notifications?.filter((notification) => notification.isRead === false);
-    }
-    const userUnreadMessageNotification = unreadMessageNotification()?.filter((noti) => noti.senderId === receiverUser?._id);
+    // const unreadMessageNotification = () => {
+    //     return notifications?.filter((notification) => notification.isRead === false);
+    // }
+    // const userUnreadMessageNotification = unreadMessageNotification()?.filter((noti) => noti.senderId === receiverUser?._id);
 
     // useEffect(() => {
     //     updateCurrentFirstChat(chat)
     // }, [])
     return (
         <div>
-            <StyledItemUser role="button" onClick={() => {
-                if(userUnreadMessageNotification.length > 0)
-                marskUserChatSeenMessage(userUnreadMessageNotification, notifications)
-            }}>
-
+            <StyledItemUser role="button">
                 <StyledAvatarUser></StyledAvatarUser>
                 <StyledUserChat>
-                    {userOnline?.map((user) => (
-                        user?.userId === receiverUser?._id ? (
-                            <React.Fragment key={user._id}>
-                                <StyledStatus></StyledStatus>
-                            </React.Fragment>
-                        ) : null
-                    ))}
-                    {userUnreadMessageNotification?.length > 0 ? 
-                        (<StyledNotification>{userUnreadMessageNotification?.length > 0 ? userUnreadMessageNotification?.length : ''}</StyledNotification>) : null}
+                    <StyledNotification>1</StyledNotification>
                     <StyledUserName>{receiverUser?.name}</StyledUserName>
                 </StyledUserChat>
             </StyledItemUser>

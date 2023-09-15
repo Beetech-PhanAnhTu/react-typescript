@@ -1,8 +1,11 @@
-import { useState } from 'react'
+import { useContext } from 'react'
 import './App.css'
 import styled from 'styled-components'
 import { Link, Route, Routes } from 'react-router-dom';
 import Login from './component/Login/Login';
+import { AuthContextUser } from './context/AuthContext';
+import Content from './Content';
+import { ChatContextProvider } from './context/ChatContext';
 
 const StyledContainer = styled.div`
   height: 800px;
@@ -38,24 +41,26 @@ const StyledLink = styled(Link)`
 `;
 
 function App() {
+  const {user} = useContext(AuthContextUser)
 
   return (
-    <StyledContainer>
-      <StyledHeader className="App">
-        <StyledNavBar>
-          <StyledItem><StyledLink to="/login">Login</StyledLink></StyledItem>
-          <StyledItem><StyledLink to="/">Chat room</StyledLink></StyledItem>
-        </StyledNavBar>
-        <StyledNavBar>
-          {/* <NavBarUser></NavBarUser> */}
-        </StyledNavBar>
-      </StyledHeader>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        {/* <Route exact path="/" component={} />
-        <Route exact path="/user" component={} /> */}
-      </Routes>
-    </StyledContainer>
+    <ChatContextProvider user={user}>
+      <StyledContainer>
+        <StyledHeader className="App">
+          <StyledNavBar>
+            <StyledItem><StyledLink to="/login">Login</StyledLink></StyledItem>
+            <StyledItem><StyledLink to="/">Chat room</StyledLink></StyledItem>
+          </StyledNavBar>
+          <StyledNavBar>
+            {/* <NavBarUser></NavBarUser> */}
+          </StyledNavBar>
+        </StyledHeader>
+        <Routes>
+          <Route path="/login" element={user ? <Content/> : <Login />} />
+          <Route path="/" element={user ? <Content/> : <Login />} />
+        </Routes>
+      </StyledContainer>
+    </ChatContextProvider>
   )
 }
 

@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+export interface IStyledMessage{
+  ismine: string;
+}
+
 //chat panel
 export const StyledChatPanel = styled.div`
   display: flex;
@@ -13,24 +17,24 @@ export const StyledChatPanel = styled.div`
   overflow-y: auto;
 `;
 
-export const StyledMainChat = styled.main`
+export const StyledMainChat = styled.div`
   flex: 1;
   overflow-y: auto;
   padding: 10px;
 `;
 
-export const StyledMess = styled.div`
+export const StyledMess = styled.div<IStyledMessage>`
   display: flex;
-  align-items: ${({ismine}) => (ismine == 'true' ? 'flex-end' : '')};
+  align-items: ${({ismine}) => (ismine === 'true' ? 'flex-end' : '')};
   margin-bottom: 10px;
-  flex-direction: ${({ismine}) => (ismine == 'false' ? 'row-reverse' : '')};
+  flex-direction: ${({ismine}) => (ismine === 'false' ? 'row-reverse' : '')};
   flex: 1;
   overflow-y: auto;
   padding: 10px;
   position: relative;
 `;
 
-export const StyledMessImg = styled.div`
+export const StyledMessImg = styled.div<IStyledMessage>`
   width: 50px;
   height: 50px;
   margin-right: 10px;
@@ -40,7 +44,7 @@ export const StyledMessImg = styled.div`
   background-size: cover;
   border-radius: 50%;
   background-image: url(https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes-thumbnail.png);
-  transform: ${({ismine}) => ismine == 'false' ? 'translateX(9px) translateY(32px)' : ''};
+  transform: ${({ismine}) => ismine === 'false' ? 'translateX(9px) translateY(32px)' : ''};
 `;
 
 export const StyledNoConversationYet = styled.p`
@@ -66,11 +70,11 @@ export const StyledButtonSend = styled.button`
     transition: background 0.23s;
 `;
 
-export const StyledBubble = styled.div`
+export const StyledBubble = styled.div<IStyledMessage>`
   padding: 15px;
   border-radius: 15px;
-  background: ${({ismine}) => ismine == 'false' ? 'var(--right-msg-bg)' : 'var(--left-msg-bg)'};
-  color: ${({ismine}) => ismine == 'false' ? '#fff' : '#000'};
+  background: ${({ismine}) => ismine === 'false' ? 'var(--right-msg-bg)' : 'var(--left-msg-bg)'};
+  color: ${({ismine}) => ismine === 'false' ? '#fff' : '#000'};
 `;
 
 export const StyledInfo = styled.div`

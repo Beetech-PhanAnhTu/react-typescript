@@ -31,6 +31,8 @@ export const AuthContextUser = createContext<IAuthContextType>({
 
 export const AuthContextUserProvider: React.FC<AuthContextUserProviderProps> = ({ children } : AuthContextUserProviderProps) => {
   const [user, setUser] = useState<any>(null);
+  
+  const navigate = useNavigate();
   // login state
   const [userLogin, setUserLogin] = useState<User>({
     email: "",
@@ -38,8 +40,8 @@ export const AuthContextUserProvider: React.FC<AuthContextUserProviderProps> = (
   });
 
   useEffect(() => {
-    const user = localStorage.getItem("userAuth");
-    setUser(JSON.parse(user || "null"));
+    const user: any = localStorage.getItem("userAuth");
+    setUser(JSON.parse(user));
   }, []);
 
   // handle login user
@@ -63,6 +65,7 @@ export const AuthContextUserProvider: React.FC<AuthContextUserProviderProps> = (
         // Handle successful response then store user in localStorage, set state response user
         localStorage.setItem("userAuth", JSON.stringify(response.data));
         setUser(response?.data);
+        navigate('/');
 
       } catch (error: any) {
         // Handle error
