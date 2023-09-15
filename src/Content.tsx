@@ -68,7 +68,7 @@ function Content() {
             {userChatLength < 1 ? null : (
                 <StyleListUser>
                     {userChat?.map((chat, index) => (
-                        <div key={index} onClick={() => updateCurrentChat(chat)}>
+                        <div key={index} onClick={() => updateCurrentChat?.(chat)}>
                             <UserChat chat={chat} user={user}/>
                         </div>                   
                     ))}

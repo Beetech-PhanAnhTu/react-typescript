@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from "axios";
-import { type } from "os";
 import React, { ReactNode, createContext, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 

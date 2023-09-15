@@ -64,9 +64,9 @@ export function ChatPannel(){
             </StyledMainChat>
             <StyleFormArea onSubmit={(e) =>{
                 e.preventDefault();
-                handleSendMessage(newMessage, user, currentChat?._id)
+                handleSendMessage(newMessage, user, currentChat!._id)
             }}>
-                <StyledChatInput type="text" value={newMessage} onChange={(e) => {setNewMessage(e.target.value)}}></StyledChatInput>
+                <StyledChatInput type="text" value={newMessage} onChange={(e) => {setNewMessage?.(e.target.value)}}></StyledChatInput>
                 <StyledButtonSend type="submit">send</StyledButtonSend>
             </StyleFormArea>
         </StyledChatPanel>

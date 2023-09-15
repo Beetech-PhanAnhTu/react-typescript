@@ -39,7 +39,7 @@ export const ChatContext = createContext<IChatContextType>({
         text: '',
         prev: ''
     },
-    handleSendMessage: (newMessage: string, sender: any, currentChatId: string) => {},
+    handleSendMessage: () => {},
     newMessage: ''
 });
 
@@ -49,7 +49,7 @@ export const ChatContextProvider:React.FC<ChatContextProviderProps> = ({children
     // const [listUserCreateChat, setListUserCreateChat] = useState(null);
     const [currentChat, setCurrentChat] = useState<IUserChat>();
     const [message, setMessage] = useState<IMessage[]>([]);
-    const [userOnline, setUserOnline] = useState(null);
+    // const [userOnline, setUserOnline] = useState(null);
 
     // //send new message
     const [newMessage, setNewMessage] = useState<string>('');
@@ -120,9 +120,9 @@ export const ChatContextProvider:React.FC<ChatContextProviderProps> = ({children
         if(socket === null) return;
         socket.emit("addNewUser", user?._id);
 
-        socket.on('userOnline', (res) => {
-            setUserOnline(res)
-        })
+        // socket.on('userOnline', (res) => {
+        //     setUserOnline(res)
+        // })
         return () => {
             socket.off('userOnline');
         }

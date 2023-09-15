@@ -27,16 +27,6 @@ const StyledUserChat = styled.div`
     cursor: pointer;
 `;
 
-const StyledStatus = styled.div`
-    position: absolute;
-    top: 10px;
-    left: 3px;
-    width: 10px;
-    height: 10px;
-    border-radius: 5px;
-    background-color: #37d316;
-`;
-
 const StyledUserName = styled.div`
     position: absolute;
     top: 5px;
