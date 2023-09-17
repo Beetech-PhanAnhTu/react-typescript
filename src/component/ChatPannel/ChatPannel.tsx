@@ -25,14 +25,13 @@ export function ChatPannel(){
         setNewMessage,
         handleSendMessage,
         // newMessage,
-        // scrollRef,
+        scrollRef,
         newMessage,
         message
     } = useContext(ChatContext);
 
     const {user} = useContext(AuthContextUser);
 
-    console.log(newMessage);
     
     const {receiverUser} = useFetchReceiverUser(currentChat, user);
     
@@ -48,7 +47,7 @@ export function ChatPannel(){
             <StyledMainChat>
                 {message?.map((item, index) =>
                     (
-                        <StyledMess key={index} ismine={item.senderId !== user?._id ? 'true' : 'false'}>
+                        <StyledMess tabIndex={-1} ref={scrollRef as React.RefObject<HTMLDivElement>} key={index} ismine={item.senderId !== user?._id ? 'true' : 'false'}>
                             <StyledMessImg ismine={item.senderId !== user?._id ? 'true' : 'false'}></StyledMessImg>
                             <StyledBubble ismine={item.senderId !== user?._id ? 'true' : 'false'}>
                                 <StyledInfo>

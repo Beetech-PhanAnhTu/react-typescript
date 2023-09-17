@@ -6,6 +6,7 @@ import Login from './component/Login/Login';
 import { AuthContextUser } from './context/AuthContext';
 import Content from './Content';
 import { ChatContextProvider } from './context/ChatContext';
+import NavBarUser from './component/NavBarUser/NavbarUser';
 
 const StyledContainer = styled.div`
   height: 800px;
@@ -52,7 +53,7 @@ function App() {
             <StyledItem><StyledLink to="/">Chat room</StyledLink></StyledItem>
           </StyledNavBar>
           <StyledNavBar>
-            {/* <NavBarUser></NavBarUser> */}
+            <NavBarUser />
           </StyledNavBar>
         </StyledHeader>
         <Routes>

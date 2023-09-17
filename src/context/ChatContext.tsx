@@ -3,7 +3,7 @@ import axios from "axios";
 import React, {createContext, useCallback, useEffect, useRef, useState } from "react";
 
 import { Socket, io } from "socket.io-client";
-import { IMessage, IUserChat } from "./ChatContextType";
+import { IMessage, IUser, IUserChat } from "./ChatContextType";
 
 interface IChatContextType {
     userChat?: IUserChat[];
@@ -15,6 +15,9 @@ interface IChatContextType {
     newMessageSocket?: IMessage,
     handleSendMessage: (newMessage: string, sender: any, currentChatId: string) => void;
     newMessage: string;
+    listUserCreateChat?: IUser[],
+    HandleCreateChatUser: (firstId: string, secondId: string) => void,
+    scrollRef: React.RefObject<HTMLDivElement | null | undefined>;
 }
 
 interface ChatContextProviderProps {
@@ -37,16 +40,17 @@ export const ChatContext = createContext<IChatContextType>({
         chatId: '',
         senderId: '',
         text: '',
-        prev: ''
     },
     handleSendMessage: () => {},
-    newMessage: ''
+    newMessage: '',
+    HandleCreateChatUser: () => {},
+    scrollRef: null as unknown as React.RefObject<HTMLDivElement>,
 });
 
 export const ChatContextProvider:React.FC<ChatContextProviderProps> = ({children, user}) => {
     const [userChat, setChat] = useState<IUserChat[]>();
     // list friend to create a room chat
-    // const [listUserCreateChat, setListUserCreateChat] = useState(null);
+    const [listUserCreateChat, setListUserCreateChat] = useState<IUser[]>([]);
     const [currentChat, setCurrentChat] = useState<IUserChat>();
     const [message, setMessage] = useState<IMessage[]>([]);
     // const [userOnline, setUserOnline] = useState(null);
@@ -58,7 +62,7 @@ export const ChatContextProvider:React.FC<ChatContextProviderProps> = ({children
 
     const [socket, setSocket] = useState(io());
 
-    const scrollRef = useRef<HTMLDivElement | null>(null);
+    const scrollRef = useRef<HTMLDivElement | null | undefined>(null);
 
     // const [notifications, setNotifications] = useState([]);
 
@@ -79,23 +83,23 @@ export const ChatContextProvider:React.FC<ChatContextProviderProps> = ({children
     //     })();
     // }, [currentChat])
 
-    // const HandleCreateChatUser = useCallback(async(firstId, secondId) => {
-    //     try {
-    //         const response = await axios.post(`http://localhost:5000/api/chats`, JSON.stringify({
-    //             firstId: firstId,
-    //             secondId: secondId,
-    //         }),  {
-    //             headers: {'Content-Type': 'application/json'},
-    //             withCredentials: true,
-    //             timeout: 10000
-    //         });
-    //         // console.log(response?.data);
-    //         setChat((prev) => [...prev, response?.data]);
-    //     } catch (error) {
-    //         // Handle errors from axios or socket.emit if needed
-    //         console.error('Error:', error.message);
-    //     }
-    // }, [])
+    const HandleCreateChatUser = useCallback(async(firstId: string, secondId: string) => {
+        try {
+            const response = await axios.post(`http://localhost:5000/api/chats`, JSON.stringify({
+                firstId: firstId,
+                secondId: secondId,
+            }),  {
+                headers: {'Content-Type': 'application/json'},
+                withCredentials: true,
+                timeout: 10000
+            });
+            // console.log(response?.data);
+            setChat((prev) => [...(prev ?? []), response?.data]);
+        } catch (error: any) {
+            // Handle errors from axios or socket.emit if needed
+            console.error('Error:', error.message);
+        }
+    }, [])
 
     //set state for scroll chat
     useEffect(() => {
@@ -231,25 +235,25 @@ export const ChatContextProvider:React.FC<ChatContextProviderProps> = ({children
 
 
     // // 
-    // useEffect(() => {
-    //     (async () => {
-    //         const response = await axios.get(`http://localhost:5000/api/users`)
-    //         const UserchatRoom = response?.data.filter((u) => {
-    //             let isChatCreated = false;
-    //             if(user?.data?._id === u?._id){
-    //                 return false;
-    //             }
+    useEffect(() => {
+        (async () => {
+            const response = await axios.get(`http://localhost:5000/api/users`)
+            const UserchatRoom = response?.data.filter((u: any) => {
+                let isChatCreated: boolean | undefined = false;
+                if(user?._id === u?._id){
+                    return false;
+                }
 
-    //             // //check if users existed chatrôm
-    //             isChatCreated = userChat?.some((chat) => {
-    //                 return chat?.members.includes(u?._id)
-    //             })
-    //             console.log("isChatCreated", isChatCreated);
-    //             return !isChatCreated;
-    //         })
-    //         setListUserCreateChat(UserchatRoom);
-    //     })();
-    // }, [userChat]);
+                // //check if users existed chatrôm
+                isChatCreated = userChat?.some((chat) => {
+                    return chat?.members?.includes(u?._id)
+                })
+                console.log("isChatCreated", isChatCreated);
+                return !isChatCreated;
+            })
+            setListUserCreateChat(UserchatRoom);
+        })();
+    }, [userChat]);
 
     // //get message
     useEffect(() => {
@@ -300,11 +304,12 @@ export const ChatContextProvider:React.FC<ChatContextProviderProps> = ({children
         setNewMessage,
         handleSendMessage,
         newMessageSocket,
-        newMessage
+        newMessage,
         // handleSendMessage,
         // newMessage,
-        // listUserCreateChat,
-        // HandleCreateChatUser,
+        listUserCreateChat,
+        HandleCreateChatUser,
+        scrollRef
         // userOnline,
         // userInfo,
         // notifications,
