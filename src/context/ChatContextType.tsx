@@ -20,3 +20,13 @@ export interface IUser {
     email: string,
     password: string,
 }
+
+export interface IUserOnline{
+    userId: string,
+    socketId: string,
+}
+
+export interface IUserInfo{
+    name: string,
+    email: string,
+}

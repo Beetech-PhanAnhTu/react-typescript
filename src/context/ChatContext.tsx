@@ -3,7 +3,7 @@ import axios from "axios";
 import React, {createContext, useCallback, useEffect, useRef, useState } from "react";
 
 import { Socket, io } from "socket.io-client";
-import { IMessage, IUser, IUserChat } from "./ChatContextType";
+import { IMessage, IUser, IUserChat, IUserInfo, IUserOnline } from "./ChatContextType";
 
 interface IChatContextType {
     userChat?: IUserChat[];
@@ -18,6 +18,8 @@ interface IChatContextType {
     listUserCreateChat?: IUser[],
     HandleCreateChatUser: (firstId: string, secondId: string) => void,
     scrollRef: React.RefObject<HTMLDivElement | null | undefined>;
+    userOnline?: IUserOnline[];
+    userInfo?: IUserInfo;
 }
 
 interface ChatContextProviderProps {
@@ -45,6 +47,11 @@ export const ChatContext = createContext<IChatContextType>({
     newMessage: '',
     HandleCreateChatUser: () => {},
     scrollRef: null as unknown as React.RefObject<HTMLDivElement>,
+    userOnline: [],
+    userInfo: {
+        name: '',
+        email: ''
+    }
 });
 
 export const ChatContextProvider:React.FC<ChatContextProviderProps> = ({children, user}) => {
@@ -53,7 +60,7 @@ export const ChatContextProvider:React.FC<ChatContextProviderProps> = ({children
     const [listUserCreateChat, setListUserCreateChat] = useState<IUser[]>([]);
     const [currentChat, setCurrentChat] = useState<IUserChat>();
     const [message, setMessage] = useState<IMessage[]>([]);
-    // const [userOnline, setUserOnline] = useState(null);
+    const [userOnline, setUserOnline] = useState<IUserOnline[]>([]);
 
     // //send new message
     const [newMessage, setNewMessage] = useState<string>('');
@@ -67,21 +74,18 @@ export const ChatContextProvider:React.FC<ChatContextProviderProps> = ({children
     // const [notifications, setNotifications] = useState([]);
 
     // //get User Info
-    // const [userInfo, setUserInfo] = useState(null);
+    const [userInfo, setUserInfo] = useState<IUserInfo>();
+    
 
-    // const navigate = useNavigate();
-
-    // useEffect(() => {
-    //     (async () => {
-    //         const getUserInfo = currentChat?.members?.find((id) => id !== user?.data?._id);
-    //         if(getUserInfo){
-    //             const response = await axios.get(`http://localhost:5000/api/users/find/${getUserInfo}`);
-    //             setUserInfo(response?.data);
-    //         }else{
-    //             navigate('/')
-    //         }
-    //     })();
-    // }, [currentChat])
+    useEffect(() => {
+        (async () => {
+            const getUserInfo = currentChat?.members?.find((id) => id !== user?.data?._id);
+            if(getUserInfo){
+                const response = await axios.get(`http://localhost:5000/api/users/find/${getUserInfo}`);
+                setUserInfo(response?.data);
+            }
+        })();
+    }, [currentChat])
 
     const HandleCreateChatUser = useCallback(async(firstId: string, secondId: string) => {
         try {
@@ -124,9 +128,9 @@ export const ChatContextProvider:React.FC<ChatContextProviderProps> = ({children
         if(socket === null) return;
         socket.emit("addNewUser", user?._id);
 
-        // socket.on('userOnline', (res) => {
-        //     setUserOnline(res)
-        // })
+        socket.on('userOnline', (res: any) => {
+            setUserOnline(res)
+        })
         return () => {
             socket.off('userOnline');
         }
@@ -162,7 +166,7 @@ export const ChatContextProvider:React.FC<ChatContextProviderProps> = ({children
         }
         try {
             console.log("trying to receive message");
-            socket.on("getMessage", (res) => {
+            socket.on("getMessage", (res: any) => {
                 if(currentChat?._id !== res.chatId) return;
                 
                 setMessage((prev) => [...prev, res]);
@@ -309,9 +313,9 @@ export const ChatContextProvider:React.FC<ChatContextProviderProps> = ({children
         // newMessage,
         listUserCreateChat,
         HandleCreateChatUser,
-        scrollRef
-        // userOnline,
-        // userInfo,
+        scrollRef,
+        userOnline,
+        userInfo,
         // notifications,
         // marskUserChatSeenMessage,
         // updateCurrentFirstChat

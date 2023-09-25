@@ -11,9 +11,6 @@ export interface IreceiverUser {
 }
 
 export const useFetchReceiverUser = (chat: any, user: any | null) => {
-    console.log(chat);
-    
-    
     const [receiverUser, setReceiverUser] = useState<IreceiverUser>();
 
     const ReceiveId = user == null ? chat?.chat?.members.find((id: string) => id !== chat?.user?._id) :

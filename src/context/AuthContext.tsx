@@ -48,7 +48,6 @@ export const AuthContextUserProvider: React.FC<AuthContextUserProviderProps> = (
     async (e: React.FormEvent) => {
       e.preventDefault();
       // call api login
-      console.log(userLogin);
       
       try {
         const response: AxiosResponse<User> = await axios.post(

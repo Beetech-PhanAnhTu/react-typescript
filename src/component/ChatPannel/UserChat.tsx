@@ -1,8 +1,9 @@
 import styled from "styled-components";
 // import { useFetchReceiverUser } from "../../hooks/useFetchReceiverUser";
-import React from "react";
+import React, { useContext } from "react";
 import { useFetchReceiverUser } from "../../hooks/useFetchReceiverUser";
 import { IUserChat } from "../../context/ChatContextType";
+import { ChatContext } from "../../context/ChatContext";
 
 const StyledAvatarUser = styled.a`
     display: block;
@@ -61,6 +62,16 @@ const StyledNotification = styled.span`
     color: #fff;
 `;
 
+const StyledStatus = styled.div`
+    position: absolute;
+    top: 10px;
+    left: 3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #37d316;
+`;
+
 interface UserChatProps {
     chat: IUserChat;
     user: any;
@@ -70,9 +81,7 @@ interface UserChatProps {
 const UserChat:React.FC<UserChatProps> = (chat) => {
     const {receiverUser} = useFetchReceiverUser(chat, null);
     
-    // console.log(receiverUser);
-    
-    // const {userOnline, notifications, marskUserChatSeenMessage, updateCurrentFirstChat} = useContext(ChatContext);
+    const {userOnline} = useContext(ChatContext);
 
     //unread message notification
     // const unreadMessageNotification = () => {
@@ -80,14 +89,18 @@ const UserChat:React.FC<UserChatProps> = (chat) => {
     // }
     // const userUnreadMessageNotification = unreadMessageNotification()?.filter((noti) => noti.senderId === receiverUser?._id);
 
-    // useEffect(() => {
-    //     updateCurrentFirstChat(chat)
-    // }, [])
     return (
         <div>
             <StyledItemUser role="button">
                 <StyledAvatarUser></StyledAvatarUser>
                 <StyledUserChat>
+                    {userOnline?.map((user, index) => (
+                        user?.userId === receiverUser?._id ? (
+                            <React.Fragment key={index}>
+                                <StyledStatus></StyledStatus>
+                            </React.Fragment>
+                        ) : null
+                    ))}
                     <StyledNotification>1</StyledNotification>
                     <StyledUserName>{receiverUser?.name}</StyledUserName>
                 </StyledUserChat>

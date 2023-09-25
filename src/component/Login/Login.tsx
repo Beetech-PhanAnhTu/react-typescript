@@ -47,9 +47,6 @@ const StyledBtnSubmit = styled.button`
 
 const Login:React.FC = () => {
     const {userLogin, setUserLogin, HandleLoginUser} = useContext(AuthContextUser);
-
-    console.log(userLogin);
-
     return (
         <StyledFormLogin onSubmit={HandleLoginUser}>
             <StyledInput placeholder="Email" type="text" onChange={(e) => {setUserLogin({...userLogin, email: e.target.value})}} />

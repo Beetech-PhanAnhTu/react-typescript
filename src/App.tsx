@@ -1,5 +1,4 @@
-import { useContext } from 'react'
-import './App.css'
+import { useContext } from 'react';
 import styled from 'styled-components'
 import { Link, Route, Routes } from 'react-router-dom';
 import Login from './component/Login/Login';
@@ -7,6 +6,8 @@ import { AuthContextUser } from './context/AuthContext';
 import Content from './Content';
 import { ChatContextProvider } from './context/ChatContext';
 import NavBarUser from './component/NavBarUser/NavbarUser';
+import UserInfor from './component/UserInfor/UserInfor';
+import ProtectedRoute from './hooks/ProtectedRoute';
 
 const StyledContainer = styled.div`
   height: 800px;
@@ -41,7 +42,7 @@ const StyledLink = styled(Link)`
   color: #007bff;
 `;
 
-function App() {
+const App:React.FC = () => {
   const {user} = useContext(AuthContextUser)
 
   return (
@@ -52,13 +53,16 @@ function App() {
             <StyledItem><StyledLink to="/login">Login</StyledLink></StyledItem>
             <StyledItem><StyledLink to="/">Chat room</StyledLink></StyledItem>
           </StyledNavBar>
-          <StyledNavBar>
-            <NavBarUser />
-          </StyledNavBar>
         </StyledHeader>
         <Routes>
-          <Route path="/login" element={user ? <Content/> : <Login />} />
-          <Route path="/" element={user ? <Content/> : <Login />} />
+          <Route path="/login" element={user ? <Content /> : <Login />} />
+          <Route path="/" element={<ProtectedRoute user={user}>
+            <NavBarUser />
+            <Content />
+          </ProtectedRoute>} />
+          <Route path="/user" element={<ProtectedRoute user={user}>
+            <UserInfor />
+          </ProtectedRoute>}/>
         </Routes>
       </StyledContainer>
     </ChatContextProvider>
